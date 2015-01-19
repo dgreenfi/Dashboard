@@ -38,16 +38,19 @@ class gaembed(webapp2.RequestHandler):
 class charts(webapp2.RequestHandler):
 
     def get(self):
+        ## get inputs from url
         urlfetch.set_default_fetch_deadline(45)
         posts=self.request.get('posts')
+        alc_key=self.request.get('alc_key')
         api_key=self.request.get('api_key')
         license_id=self.request.get('license_id')
         dummy=self.request.get('dummy')
-        url='http://percolate-post-analyzer.appspot.com/sentiment?api_key='+api_key+'&posts='+posts+'&license_id='+license_id+'&dummy='+dummy
+        # call Percolate + Alchemy Service
+        url='http://percolate-post-analyzer.appspot.com/sentiment?api_key='+api_key+'&posts='+posts+'&license_id='+license_id+'&dummy='+dummy+'&alc_key='+alc_key
         percreq=urlfetch.fetch(url)
-
-        logging.debug("test log")
+        #log response
         logging.debug(percreq.content)
+        # translate JSON response - should add logic for bad response here.
         percposts= json.loads(percreq.content)
 
         template = JINJA_ENVIRONMENT.get_template('chart.html')
